@@ -67,8 +67,8 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
         }
       />
       <AdminContentArea>
-        <div className="grid gap-5 lg:grid-cols-[1fr_360px]">
-          <div className="flex flex-col gap-4">
+        <div className="grid gap-8 lg:grid-cols-[1fr_560px] px-6 py-12">
+          <div className="flex flex-col gap-6">
             <CompanyInfoCard
               firstName={account.firstName}
               lastName={account.lastName}
@@ -132,7 +132,7 @@ function CompanyInfoCard({
   return (
     <AdminCard>
       <AdminCardHeader title="Company information" />
-      <div className="p-5">
+      <div className="px-8 py-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <InfoCell label="First name">{firstName}</InfoCell>
           <InfoCell label="Last name">{lastName}</InfoCell>
@@ -144,10 +144,10 @@ function CompanyInfoCard({
           {referredBy ? <InfoCell label="Referred by">{referredBy}</InfoCell> : null}
         </div>
         <div className="my-5 h-px bg-[#e5e2dc]" />
-        <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.1em] text-[#aaa]">
+        <div className="mb-3 text-base font-bold uppercase tracking-[0.1em] text-[#aaa]">
           Shipping address
         </div>
-        <div className="whitespace-pre-line text-[13px] text-[#050a30]">{shippingAddress}</div>
+        <div className="whitespace-pre-line text-xl text-[#050a30]">{shippingAddress}</div>
       </div>
     </AdminCard>
   );
@@ -174,7 +174,7 @@ function MarkupCard({
             : "Changes take effect immediately on the client's next page load"
         }
       />
-      <div className="p-5">
+      <div className="px-8 py-6">
         <div className="grid gap-5 sm:grid-cols-3">
           <div>
             <FieldLabel>{isPending ? "Gemstones markup" : "Gemstones"}</FieldLabel>
@@ -198,11 +198,11 @@ function InternalNotesCard({ initialValue }: { initialValue: string }) {
   return (
     <AdminCard>
       <AdminCardHeader title="Internal notes" />
-      <div className="p-5">
+      <div className="px-8 py-6">
         <textarea
           defaultValue={initialValue}
           placeholder="Add any internal notes about this client (not visible to the client)…"
-          className="h-20 w-full resize-none rounded border border-[#e0ddd8] bg-white p-3 text-[13px] leading-[1.6] text-[#050a30] outline-none focus:border-[#233dff]"
+          className="h-20 w-full resize-none rounded border border-[#e0ddd8] bg-white p-3 text-xl leading-[1.6] text-[#050a30] outline-none focus:border-[#233dff]"
         />
       </div>
     </AdminCard>
@@ -219,9 +219,9 @@ function ApprovalPanel({
   lab: number | null;
 }) {
   const renderRow = (label: string, value: number | null) => (
-    <div className="mb-1.5 flex items-center justify-between last:mb-0">
-      <span className="text-[12px] font-light text-[#888]">{label}</span>
-      <span className="text-[12px] font-bold text-[#050a30]">
+    <div className="mb-2 flex items-center justify-between last:mb-0">
+      <span className="text-xl font-light text-[#888]">{label}</span>
+      <span className="text-xl font-bold text-[#050a30]">
         {value === null ? "Not set" : `${value}%`}
       </span>
     </div>
@@ -229,26 +229,26 @@ function ApprovalPanel({
 
   return (
     <AdminCard>
-      <div className="border-b border-[#f0ede7] bg-[#fafaf8] px-5 py-4">
-        <div className="text-[12px] font-bold text-[#050a30]">Review decision</div>
-        <div className="mt-0.5 text-[11px] font-light text-[#aaa]">
+      <div className="border-b border-[#f0ede7] bg-[#fafaf8] px-6 py-4">
+        <div className="text-xl font-bold text-[#050a30]">Review decision</div>
+        <div className="mt-1 text-base font-light text-[#aaa]">
           This will send an email to the client
         </div>
       </div>
-      <div className="flex flex-col gap-3 p-5">
+      <div className="flex flex-col gap-4 px-6 py-5">
         <div className="rounded-md border border-[#e5e2dc] bg-[#fafaf8] p-3.5">
-          <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">
+          <div className="mb-2 text-base font-bold uppercase tracking-[0.08em] text-[#aaa]">
             Markup summary
           </div>
           {renderRow("Gemstones", gem)}
           {renderRow("Natural diamonds", nat)}
           {renderRow("Lab diamonds", lab)}
         </div>
-        <AdminButton variant="approve" className="w-full justify-center py-3">
+        <AdminButton variant="approve" className="w-full justify-center py-4">
           ✓ Approve account
         </AdminButton>
         <div className="h-px bg-[#f0ede7]" />
-        <AdminButton variant="reject" className="w-full justify-center py-2.5">
+        <AdminButton variant="reject" className="w-full justify-center py-4">
           Decline request
         </AdminButton>
       </div>
@@ -270,21 +270,21 @@ function RecentRequestsPanel({
 }) {
   return (
     <AdminCard>
-      <div className="flex items-center justify-between border-b border-[#f0ede7] px-4 py-3.5">
-        <div className="text-[12px] font-bold text-[#050a30]">Recent requests</div>
-        <Link href="/admin/requests" className="text-[11px] text-[#233dff] hover:underline">
+      <div className="flex items-center justify-between border-b border-[#f0ede7] px-6 py-5">
+        <div className="text-xl font-bold text-[#050a30]">Recent requests</div>
+        <Link href="/admin/requests" className="text-base text-[#233dff] hover:underline">
           View all
         </Link>
       </div>
       <div>
         {rows.length === 0 ? (
-          <div className="px-4 py-6 text-center text-[12px] text-[#aaa]">No requests yet.</div>
+          <div className="px-4 py-6 text-center text-base text-[#aaa]">No requests yet.</div>
         ) : (
           rows.map((r, i) => (
             <div
               key={r.reference}
               className={
-                "flex items-center justify-between px-4 py-3" +
+                "flex items-center justify-between px-6 py-5" +
                 (i < rows.length - 1 ? " border-b border-[#f5f3ef]" : "")
               }
             >
@@ -292,15 +292,15 @@ function RecentRequestsPanel({
                 <div className="mb-0.5 flex items-center gap-1.5">
                   <span
                     className={
-                      "text-[11px] font-bold " +
+                      "text-xl font-bold " +
                       (r.status === "PENDING" ? "text-[#233dff]" : "text-[#050a30]")
                     }
                   >
                     {r.reference}
                   </span>
-                  <RequestStatusBadge status={r.status} size="sm" />
+                  <RequestStatusBadge status={r.status} size="md" />
                 </div>
-                <div className="text-[10px] font-light text-[#aaa]">
+                <div className="text-sm font-light text-[#aaa]">
                   {r.type === "MEMO" ? "Memo" : "Invoice"} · {r.itemCount}{" "}
                   {r.itemCount === 1 ? "item" : "items"} · {formatUsd(r.total)}
                 </div>

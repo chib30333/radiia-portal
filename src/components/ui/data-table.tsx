@@ -111,7 +111,7 @@ export function DataTable<T>({
                   <tr
                     key={rowId}
                     className={cn(
-                      "border-b border-[#f0ede7] text-[18px] text-[#050a30] transition-colors hover:bg-[#fafaf8]",
+                      "border-b border-[#f0ede7] text-xl text-[#050a30] transition-colors hover:bg-[#fafaf8]",
                       rowClassName?.(row, index, selected)
                     )}
                   >
@@ -136,7 +136,7 @@ export function DataTable<T>({
               })
             ) : (
               <tr>
-                <td colSpan={columns.length + 1} className="px-6 py-16 text-center text-[18px] text-[#aaa]">
+                <td colSpan={columns.length + 1} className="px-6 py-16 text-center text-xl text-[#aaa]">
                   {emptyState ?? "No results found."}
                 </td>
               </tr>
@@ -145,19 +145,19 @@ export function DataTable<T>({
         </table>
       </div>
       <div className="flex flex-col gap-4 bg-[#fafaf8] px-4 py-4 sm:px-5 md:flex-row md:items-center md:justify-between">
-        <div className="text-sm text-[#888] sm:text-[16px]">{summary}</div>
+        <div className="text-sm text-[#888] sm:text-base">{summary}</div>
         <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="noEffect"
             type="button"
             onClick={onPreviousPage}
             disabled={page === 1}
-            className="rounded-xl border border-[#e0ddd8] bg-white px-4 py-2 text-sm text-[#050a30] disabled:cursor-not-allowed disabled:opacity-40 sm:text-[16px]"
+            className="rounded-xl border border-[#e0ddd8] bg-white px-4 py-2 text-sm text-[#050a30] disabled:cursor-not-allowed disabled:opacity-40 sm:text-base"
           >
             <ChevronLeft className="h-4 w-4" />
             Prev
           </Button>
-          <span className="text-sm font-semibold text-[#050a30] sm:text-[16px]">
+          <span className="text-sm font-semibold text-[#050a30] sm:text-base">
             Page {page} / {pageCount}
           </span>
           <Button
@@ -165,7 +165,7 @@ export function DataTable<T>({
             type="button"
             onClick={onNextPage}
             disabled={page === pageCount}
-            className="rounded-xl border border-[#e0ddd8] bg-white px-4 py-2 text-sm text-[#050a30] disabled:cursor-not-allowed disabled:opacity-40 sm:text-[16px]"
+            className="rounded-xl border border-[#e0ddd8] bg-white px-4 py-2 text-sm text-[#050a30] disabled:cursor-not-allowed disabled:opacity-40 sm:text-base"
           >
             Next
             <ChevronRight className="h-4 w-4" />

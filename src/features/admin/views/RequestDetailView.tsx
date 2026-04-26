@@ -75,34 +75,34 @@ function RequestDetailContent({ request }: { request: AdminRequest }) {
         }
       />
       <AdminContentArea>
-        <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="grid gap-8 lg:grid-cols-[1fr_560px] px-6 py-12">
           <div>
             {request.noteFromClient ? (
-              <div className="mb-4 flex items-start gap-3 rounded-lg border border-[#e5e2dc] bg-white px-4 py-3.5">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="mt-0.5 shrink-0">
+              <div className="mb-4 flex items-start gap-3 rounded-lg border border-[#e5e2dc] bg-white px-8 py-6">
+                <svg width="20" height="20" viewBox="0 0 14 14" fill="none" className="mt-0.5 shrink-0">
                   <circle cx="7" cy="7" r="6" stroke="#aaa" strokeWidth="1.2" />
                   <line x1="7" y1="6" x2="7" y2="10" stroke="#aaa" strokeWidth="1.2" strokeLinecap="round" />
                   <circle cx="7" cy="4.5" r="0.7" fill="#aaa" />
                 </svg>
                 <div>
-                  <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">
+                  <div className="mb-1 text-base font-bold uppercase tracking-[0.08em] text-[#aaa]">
                     Note from client
                   </div>
-                  <div className="text-[13px] text-[#050a30]">&ldquo;{request.noteFromClient}&rdquo;</div>
+                  <div className="text-xl text-[#050a30]">&ldquo;{request.noteFromClient}&rdquo;</div>
                 </div>
               </div>
             ) : null}
 
-            <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.06em] text-[#050a30]">
+            <div className="mb-3 text-xl font-bold uppercase tracking-[0.06em] text-[#050a30]">
               Line items — approve or reject each individually
             </div>
 
             {items.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-[#e5e2dc] bg-white px-6 py-12 text-center text-[13px] text-[#aaa]">
+              <div className="rounded-lg border border-dashed border-[#e5e2dc] bg-white px-6 py-12 text-center text-xl text-[#aaa]">
                 No line items recorded for this request yet.
               </div>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-6">
                 {items.map((item) => (
                   <LineItemCard
                     key={item.id}
@@ -116,7 +116,7 @@ function RequestDetailContent({ request }: { request: AdminRequest }) {
             )}
           </div>
 
-          <div className="flex flex-col gap-3.5 lg:sticky lg:top-5">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-5">
             <SummaryCard
               isMemo={isMemo}
               count={totals.count}
@@ -177,31 +177,31 @@ function LineItemCard({
 
   return (
     <div className={`overflow-hidden rounded-lg border bg-white ${headerBorder}`}>
-      <div className="flex items-center gap-4 border-b border-[#f0ede7] px-4 py-3.5">
+      <div className="flex items-center gap-4 border-b border-[#f0ede7] px-8 py-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2.5">
-            <span className={`text-[13px] font-bold ${skuTone}`}>{item.sku}</span>
+          <div className="flex items-center gap-3">
+            <span className={`text-2xl font-bold ${skuTone}`}>{item.sku}</span>
             <RequestItemStatusBadge status={item.status} />
           </div>
         </div>
         <div className="shrink-0 text-right">
-          <div className={`text-[16px] font-bold ${priceTone}`}>{formatUsd(item.totalPrice)}</div>
-          <div className="text-[10px] font-light text-[#aaa]">{formatUsdPerCt(item.pricePerCarat)}</div>
+          <div className={`text-3xl font-bold ${priceTone}`}>{formatUsd(item.totalPrice)}</div>
+          <div className="text-base font-light text-[#aaa]">{formatUsdPerCt(item.pricePerCarat)}</div>
         </div>
       </div>
-      <div className={`flex items-center justify-between gap-4 px-4 py-2.5 ${detailBg}`}>
-        <div className="flex flex-wrap items-stretch gap-1.5">
+      <div className={`flex items-center justify-between gap-4 px-8 py-4 ${detailBg}`}>
+        <div className="flex flex-wrap justify-start gap-4">
           {specs.map((s, i) => (
-            <div key={s.label} className="flex items-stretch">
-              <div className="min-w-[64px]">
+            <div key={s.label} className="flex items-stretch justify-between gap-8">
+              <div className="min-w-20">
                 <div
-                  className={`mb-0.5 text-[9px] font-bold uppercase tracking-[0.08em] ${
+                  className={`text-sm font-bold uppercase tracking-[0.08em] ${
                     isRejected ? "text-[#ccc]" : "text-[#aaa]"
                   }`}
                 >
                   {s.label}
                 </div>
-                <div className={`text-[12px] ${isRejected ? "text-[#aaa]" : "text-[#050a30]"}`}>
+                <div className={`text-xl ${isRejected ? "text-[#aaa]" : "text-[#050a30]"}`}>
                   {s.value}
                 </div>
               </div>
@@ -209,10 +209,10 @@ function LineItemCard({
             </div>
           ))}
         </div>
-        <div className="ml-4 flex shrink-0 gap-2">
+        <div className="ml-4 flex items-center shrink-0 gap-4">
           {isApproved ? (
             <>
-              <span className="whitespace-nowrap text-[11px] font-bold text-[#2a9d5c]">
+              <span className="whitespace-nowrap text-xl font-bold text-[#2a9d5c]">
                 ✓ Approved
               </span>
               <AdminButton variant="reject" size="sm" onClick={onUndo}>
@@ -260,14 +260,14 @@ function SummaryCard({
 }) {
   return (
     <AdminCard>
-      <div className="border-b border-[#f0ede7] bg-[#fafaf8] px-4 py-3.5">
-        <div className="text-[12px] font-bold text-[#050a30]">Request summary</div>
-        <div className="mt-0.5 text-[11px] font-light text-[#aaa]">
+      <div className="border-b border-[#f0ede7] bg-[#fafaf8] px-6 py-4">
+        <div className="text-xl font-bold text-[#050a30]">Request summary</div>
+        <div className="mt-0.5 text-base font-light text-[#aaa]">
           Updates as you approve / reject each line
         </div>
       </div>
-      <div className="px-4 py-4">
-        <div className="mb-3.5 flex flex-col gap-2">
+      <div className="px-6 py-4">
+        <div className="mb-4 flex flex-col gap-2">
           <SummaryRow label="Total items" valueClass="text-[#050a30]">{count}</SummaryRow>
           {!isMemo ? (
             <SummaryRow label="Type" valueClass="text-[#050a30]">Invoice</SummaryRow>
@@ -288,12 +288,12 @@ function SummaryCard({
         </div>
         <div className="mb-3 h-px bg-[#f0ede7]" />
         <div className="flex items-baseline justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#050a30]">
+          <span className="text-xl font-bold uppercase tracking-[0.04em] text-[#050a30]">
             {isMemo ? "Confirmed on memo" : "Confirmed sold"}
           </span>
           <span
             className={
-              "text-[18px] font-bold " +
+              "text-xl font-bold " +
               (isMemo
                 ? "text-[#050a30]"
                 : approvedSum > 0
@@ -320,22 +320,22 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[12px] font-light text-[#888]">{label}</span>
-      <span className={`text-[12px] font-bold ${valueClass}`}>{children}</span>
+      <span className="text-xl font-light text-[#888]">{label}</span>
+      <span className={`text-xl font-bold ${valueClass}`}>{children}</span>
     </div>
   );
 }
 
 function HowItWorksCard({ isMemo }: { isMemo: boolean }) {
   return (
-    <div className="rounded-md border border-[#e5e2dc] bg-[#fafaf8] px-4 py-3.5">
-      <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">
+    <div className="rounded-md border border-[#e5e2dc] bg-[#fafaf8] px-6 py-4">
+      <div className="mb-3 text-base font-bold uppercase tracking-[0.08em] text-[#aaa]">
         How approvals work
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <div className="flex items-start gap-2">
           <Pill tone="approve">✓</Pill>
-          <div className="text-[11px] font-light leading-[1.5] text-[#888]">
+          <div className="text-xl font-light leading-[1.5] text-[#888]">
             <strong className="font-bold text-[#050a30]">Approve</strong> —{" "}
             {isMemo
               ? "item is confirmed and reserved on memo immediately"
@@ -344,7 +344,7 @@ function HowItWorksCard({ isMemo }: { isMemo: boolean }) {
         </div>
         <div className="flex items-start gap-2">
           <Pill tone="reject">✕</Pill>
-          <div className="text-[11px] font-light leading-[1.5] text-[#888]">
+          <div className="text-xl font-light leading-[1.5] text-[#888]">
             <strong className="font-bold text-[#050a30]">Not fulfilled</strong> —{" "}
             {isMemo
               ? "item stays on the request as a record, but is not reserved. Inventory unchanged."
@@ -360,7 +360,7 @@ function Pill({ tone, children }: { tone: "approve" | "reject"; children: React.
   return (
     <div
       className={
-        "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white " +
+        "mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white " +
         (tone === "approve" ? "bg-[#2a9d5c]" : "bg-[#c03030]")
       }
     >
@@ -371,11 +371,11 @@ function Pill({ tone, children }: { tone: "approve" | "reject"; children: React.
 
 function BillToCard({ address }: { address: string }) {
   return (
-    <div className="rounded-lg border border-[#e5e2dc] bg-white px-4 py-3.5">
-      <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">
+    <div className="rounded-lg border border-[#e5e2dc] bg-white px-6 py-4">
+      <div className="mb-3 text-base font-bold uppercase tracking-[0.08em] text-[#aaa]">
         Bill to
       </div>
-      <div className="whitespace-pre-line text-[12px] leading-[1.7] text-[#050a30]">{address}</div>
+      <div className="whitespace-pre-line text-xl leading-[1.7] text-[#050a30]">{address}</div>
     </div>
   );
 }
@@ -383,14 +383,14 @@ function BillToCard({ address }: { address: string }) {
 function InternalNoteCard({ initialValue }: { initialValue: string }) {
   return (
     <AdminCard>
-      <div className="border-b border-[#f0ede7] px-4 py-3">
-        <div className="text-[11px] font-bold text-[#050a30]">Internal note</div>
+      <div className="border-b border-[#f0ede7] px-6 py-4">
+        <div className="text-xl font-bold text-[#050a30]">Internal note</div>
       </div>
-      <div className="p-4">
+      <div className="p-6">
         <textarea
           defaultValue={initialValue}
           placeholder="Note for internal records only…"
-          className="h-[72px] w-full resize-none rounded border border-[#e0ddd8] bg-white p-3 text-[11px] leading-[1.6] text-[#050a30] outline-none focus:border-[#233dff]"
+          className="h-[72px] w-full resize-none rounded border border-[#e0ddd8] bg-white py-2 px-4 text-xl leading-[1.6] text-[#050a30] outline-none focus:border-[#233dff]"
         />
         <div className="mt-2">
           <AdminButton variant="primary" size="sm" className="w-full justify-center">

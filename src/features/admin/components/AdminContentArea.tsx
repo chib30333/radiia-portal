@@ -22,7 +22,7 @@ export function AdminPageHeaderMenu({
         {back ? (
           <Link
             href={back.href as never}
-            className="mb-1.5 inline-block text-sm text-[#233dff] hover:underline"
+            className="mb-2 inline-block text-base text-[#233dff] hover:underline"
           >
             ← {back.label}
           </Link>
@@ -32,10 +32,10 @@ export function AdminPageHeaderMenu({
           {badges}
         </div>
         {subtitle ? (
-          <div className="mt-1 text-base font-light text-[#aaa]">{subtitle}</div>
+          <div className="mt-1 text-xl font-light text-[#aaa]">{subtitle}</div>
         ) : null}
       </div>
-      {actions ? <div className="flex gap-2.5">{actions}</div> : null}
+      {actions ? <div className="flex gap-3">{actions}</div> : null}
     </div>
   );
 }
