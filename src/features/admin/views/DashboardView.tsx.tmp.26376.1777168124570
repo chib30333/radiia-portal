@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { AdminContentArea, AdminPageHeader } from "../components/AdminShell";
+import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import { AdminButton, AdminCard, RequestTypeBadge } from "../components/AdminPrimitives";
 import {
   mockAccounts,
@@ -25,7 +25,7 @@ export function DashboardView() {
 
   return (
     <>
-      <AdminPageHeader title="Dashboard" subtitle={formattedToday} />
+      <AdminPageHeaderMenu title="Dashboard" subtitle={formattedToday} />
       <AdminContentArea>
         <div className="grid gap-4 md:grid-cols-2">
           <DashboardSection title="Pending accounts" count={pending.length} viewAllHref="/admin/accounts">

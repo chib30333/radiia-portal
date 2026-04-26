@@ -262,7 +262,7 @@ export function DiamondSearchPageView({ variant }: DiamondSearchPageViewProps) {
   return (
     <div>
       <div className="border-b border-[#f0ede7] py-6 md:pt-16 xl:pt-12">
-        <div className="mx-auto flex  flex-col gap-8 px-6 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-12">
+        <div className="mx-auto flex flex-col gap-8 px-6 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-12">
           <div>
             <div className="flex items-center gap-2 text-[#aaa]">
               <MoveLeft className="h-4 w-4 sm:h-5 sm:w-5" />

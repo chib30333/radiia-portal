@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { AdminContentArea, AdminPageHeader } from "../components/AdminShell";
+import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import {
   AdminButton,
   FilterTab,
@@ -40,7 +40,7 @@ export function RequestsListView() {
 
   return (
     <>
-      <AdminPageHeader
+      <AdminPageHeaderMenu
         title="Requests"
         subtitle={`${counts.pending} pending · ${mockRequests.length} total this month`}
       />

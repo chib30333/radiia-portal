@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import AdminHeader from "@/features/admin/components/AdminHeader";
 
 export type ShellVariant = "default" | "page" | "auth" | "admin";
 
@@ -57,19 +58,23 @@ export function Shell({ children, className, variant }: ShellProps) {
   const pathname = usePathname();
   const resolvedVariant = variant ?? resolveShellVariant(pathname);
   const showFooter = resolvedVariant !== "auth" && resolvedVariant !== "admin";
-  const showHeader = resolvedVariant !== "admin";
+  const showHeader = resolvedVariant === "admin" || resolvedVariant === "default" || resolvedVariant === "page";
   const mainBackgroundClass =
     resolvedVariant === "auth"
       ? "bg-[#f0ede7]"
       : resolvedVariant === "admin"
         ? "bg-[#f0ede7] items-stretch justify-stretch"
         : "bg-white";
-
+  
   return (
     <div className="flex min-h-screen flex-col bg-[#f0ede7]">
-      {showHeader ? <Header /> : null}
+      {showHeader ? 
+        resolvedVariant === "admin" 
+        ? <AdminHeader /> 
+        :  <Header /> : null}
+
       <main className={cn("flex flex-1 justify-center items-center", mainBackgroundClass, resolveMainSection(pathname))}>
-        <div className={cn("flex min-h-full w-full flex-col", shellVariantClasses[resolvedVariant], className)}>
+        <div className={cn("flex min-h-full w-full flex-col flex-1", shellVariantClasses[resolvedVariant], className)}>
           {children}
         </div>
       </main>

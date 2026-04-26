@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { AdminContentArea, AdminPageHeader } from "../components/AdminShell";
+import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import {
   AccountStatusBadge,
   AdminButton,
@@ -28,7 +28,7 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
   if (!account) {
     return (
       <>
-        <AdminPageHeader title="Account not found" back={{ href: "/admin/accounts", label: "Back to Accounts" }} />
+        <AdminPageHeaderMenu title="Account not found" back={{ href: "/admin/accounts", label: "Back to Accounts" }} />
         <AdminContentArea>
           <div className="rounded-lg border border-dashed border-[#e5e2dc] bg-white px-6 py-12 text-center text-[13px] text-[#aaa]">
             No account exists with id <span className="font-bold">{accountId}</span>.
@@ -52,7 +52,7 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
 
   return (
     <>
-      <AdminPageHeader
+      <AdminPageHeaderMenu
         title={fullName}
         subtitle={subtitle}
         back={{ href: "/admin/accounts", label: "Back to Accounts" }}

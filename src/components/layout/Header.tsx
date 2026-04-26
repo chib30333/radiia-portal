@@ -91,7 +91,7 @@ export function Header({ forceDropdownOpen }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#e5e2dc] bg-white backdrop-blur">
-      <div className="mx-auto flex w-full  items-center justify-between gap-8 px-6 py-1 sm:px-6 lg:px-12">
+      <div className="mx-auto flex w-full items-center justify-between gap-8 px-6 py-1 sm:px-6 lg:px-12">
         <Link href="/" className="flex items-center">
           <Image
             src={theme === "dark" ? radiiaLightLogo : radiiaDarkLogo}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { AdminContentArea, AdminPageHeader } from "../components/AdminShell";
+import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import {
   AccountStatusBadge,
   AdminButton,
@@ -37,7 +37,7 @@ export function AccountsListView() {
 
   return (
     <>
-      <AdminPageHeader
+      <AdminPageHeaderMenu
         title="Accounts"
         subtitle={`${counts.all} total · ${counts.pending} pending · ${counts.active} active`}
       />
