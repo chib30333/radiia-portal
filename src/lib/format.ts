@@ -1,3 +1,6 @@
+// Shared formatting utilities — currency, dates, relative time.
+// Pure, no React, no I/O. Per guideline 01 (folder structure §3.6).
+
 export function formatUsd(value: number): string {
   return value.toLocaleString("en-US", {
     style: "currency",

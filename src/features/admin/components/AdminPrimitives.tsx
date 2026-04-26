@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
-import type { AccountStatus, RequestItemStatus, RequestStatus, RequestType } from "../lib/types";
+import type { AccountStatus, RequestItemStatus, RequestStatus, RequestType } from "@/types/admin";
 
 const sizeClasses = {
   sm: "px-1.5 py-1 text-xs",

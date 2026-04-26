@@ -11,18 +11,18 @@ import {
   RequestStatusBadge
 } from "../components/AdminPrimitives";
 import {
-  getMockCompanyById,
-  getMockRequestById
-} from "../lib/mock-admin-data";
-import { formatDate, formatTime, formatUsd, formatUsdPerCt } from "../lib/format";
+  findCompanyById,
+  findRequestById
+} from "@/services/admin.service";
+import { formatDate, formatTime, formatUsd, formatUsdPerCt } from "@/lib/format";
 import type {
   AdminRequest,
   AdminRequestItem,
   RequestItemStatus
-} from "../lib/types";
+} from "@/types/admin";
 
 export function RequestDetailView({ requestId }: { requestId: string }) {
-  const request = getMockRequestById(requestId);
+  const request = findRequestById(requestId);
 
   if (!request) {
     return (
@@ -44,7 +44,7 @@ export function RequestDetailView({ requestId }: { requestId: string }) {
 }
 
 function RequestDetailContent({ request }: { request: AdminRequest }) {
-  const company = getMockCompanyById(request.companyId);
+  const company = findCompanyById(request.companyId);
   const isMemo = request.type === "MEMO";
   const [items, setItems] = useState<AdminRequestItem[]>(request.items);
 

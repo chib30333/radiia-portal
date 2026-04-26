@@ -1,9 +1,8 @@
-// Admin domain types for Phase A-UI.
+// Admin domain types — canonical shapes consumed by views and admin services.
 //
-// These mirror the planned Prisma schema shapes so the A-DATA pass becomes a
-// mechanical swap from `mock-admin-data.ts` to real `prisma.*.findMany(...)`
-// queries. Until Prisma is installed (Phase I), these inline types stand in for
-// `import type { Company, User, Request } from "@prisma/client"`.
+// These mirror the planned Prisma schema so the Phase A-DATA swap from
+// `src/services/admin.service.ts` mock fixtures to real `prisma.*` queries
+// becomes mechanical: replace the import, keep the field names.
 
 export type AccountStatus = "PENDING" | "ACTIVE" | "DEACTIVATED" | "DECLINED";
 
@@ -17,7 +16,7 @@ export type RequestStatus =
 
 export type RequestItemStatus = "UNDECIDED" | "APPROVED" | "REJECTED";
 
-export type ItemCategory = "gemstone" | "natural-diamond" | "lab-diamond";
+export type AdminItemCategory = "gemstone" | "natural-diamond" | "lab-diamond";
 
 export type AdminCompany = {
   id: string;
@@ -46,7 +45,7 @@ export type AdminAccount = {
 export type AdminRequestItem = {
   id: string;
   sku: string;
-  category: ItemCategory;
+  category: AdminItemCategory;
   variety: string;
   shape: string;
   carat: number;

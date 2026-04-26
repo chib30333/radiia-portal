@@ -3,13 +3,13 @@ import Link from "next/link";
 import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import { AdminButton, AdminCard, RequestTypeBadge } from "../components/AdminPrimitives";
 import {
-  mockAccounts,
-  mockRequests,
-  mockTotalRequestItemCount,
-  mockTotalRequestValue,
-  getMockCompanyById
-} from "../lib/mock-admin-data";
-import { formatRelative, formatUsd } from "../lib/format";
+  adminAccountsList,
+  adminRequestsList,
+  getRequestItemCount,
+  getRequestTotalValue,
+  findCompanyById
+} from "@/services/admin.service";
+import { formatRelative, formatUsd } from "@/lib/format";
 
 export function DashboardView() {
   const today = new Date("2026-04-23T12:00:00.000Z");
@@ -20,8 +20,8 @@ export function DashboardView() {
     day: "numeric"
   });
 
-  const pending = mockAccounts.filter((a) => a.status === "PENDING");
-  const openRequests = mockRequests.filter((r) => r.status === "PENDING");
+  const pending = adminAccountsList.filter((a) => a.status === "PENDING");
+  const openRequests = adminRequestsList.filter((r) => r.status === "PENDING");
 
   return (
     <>
@@ -31,7 +31,7 @@ export function DashboardView() {
           <DashboardSection title="Pending accounts" count={pending.length} viewAllHref="/admin/accounts">
             <AdminCard>
               {pending.map((acc, i) => {
-                const company = getMockCompanyById(acc.companyId);
+                const company = findCompanyById(acc.companyId);
                 return (
                   <div
                     key={acc.id}
@@ -65,9 +65,9 @@ export function DashboardView() {
           <DashboardSection title="Open requests" count={openRequests.length + 4} viewAllHref="/admin/requests">
             <AdminCard>
               {openRequests.slice(0, 3).map((req, i) => {
-                const company = getMockCompanyById(req.companyId);
-                const total = mockTotalRequestValue(req);
-                const itemCount = mockTotalRequestItemCount(req);
+                const company = findCompanyById(req.companyId);
+                const total = getRequestTotalValue(req);
+                const itemCount = getRequestItemCount(req);
                 return (
                   <div
                     key={req.id}
