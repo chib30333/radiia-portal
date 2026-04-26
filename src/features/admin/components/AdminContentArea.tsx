@@ -17,7 +17,7 @@ export function AdminPageHeaderMenu({
   actions?: ReactNode;
 }) {
   return (
-    <div className="mx-auto flex items-baseline justify-between border-b border-[#f0ede7] gap-8 px-6 sm:px-6 lg:px-12">
+    <div className="flex items-baseline justify-between border-b border-[#f0ede7] gap-8 px-6 sm:px-6 lg:px-12">
       <div className="p-6">
         {back ? (
           <Link
@@ -41,5 +41,9 @@ export function AdminPageHeaderMenu({
 }
 
 export function AdminContentArea({ children }: { children: ReactNode }) {
-  return <div className="min-h-[400px] bg-[#fafaf8] px-6 sm:px-6 lg:px-12">{children}</div>;
+  return (
+    <div className="flex flex-1 flex-col bg-[#fafaf8] px-6 sm:px-6 lg:px-12">
+      {children}
+    </div>
+  );
 }

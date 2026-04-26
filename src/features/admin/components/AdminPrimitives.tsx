@@ -243,7 +243,7 @@ export function FilterTab({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded border px-3.5 py-1.5 text-[11px]",
+        "inline-flex items-center gap-2 rounded border px-4 py-1 text-base",
         active
           ? "border-[#050a30] bg-[#050a30] font-bold text-white"
           : toneAccent
@@ -255,7 +255,7 @@ export function FilterTab({
       {count !== undefined ? (
         <span
           className={cn(
-            "ml-1 rounded-[10px] px-1.5 text-[10px]",
+            "ml-1 rounded-full font-bold px-1.5 text-sm",
             active
               ? "bg-white/20"
               : countTone === "pending"

@@ -42,7 +42,7 @@ export function AccountsListView() {
         subtitle={`${counts.all} total · ${counts.pending} pending · ${counts.active} active`}
       />
       <AdminContentArea>
-        <div className="mb-4 flex flex-wrap items-center gap-2.5">
+        <div className="mb-4 flex flex-wrap items-center gap-3 px-6 pt-12">
           <FilterTab active={filter === "all"} count={counts.all} onClick={() => setFilter("all")}>
             All
           </FilterTab>
@@ -74,8 +74,8 @@ export function AccountsListView() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-[#e5e2dc] bg-white">
-          <div className="overflow-x-auto">
+        <div className="overflow-hidden px-6">
+          <div className="overflow-x-auto border border-[#e5e2dc] bg-white rounded-lg">
             <table className="w-full border-collapse text-[12px]">
               <thead>
                 <tr className="border-b-2 border-[#e5e2dc] bg-[#fafaf8] text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">

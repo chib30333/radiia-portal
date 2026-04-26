@@ -24,7 +24,7 @@ export function DashboardView() {
   const openRequests = mockRequests.filter((r) => r.status === "PENDING");
 
   return (
-    <div className="">
+    <>
       <AdminPageHeaderMenu title="Dashboard" subtitle={formattedToday} />
       <AdminContentArea>
         <div className="grid gap-6 lg:gap-10 md:grid-cols-2 p-6">
@@ -103,7 +103,7 @@ export function DashboardView() {
           </DashboardSection>
         </div>
       </AdminContentArea>
-    </div>
+    </>
   );
 }
 
