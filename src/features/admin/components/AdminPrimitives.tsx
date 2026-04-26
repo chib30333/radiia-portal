@@ -275,7 +275,7 @@ export function SearchInput({ placeholder }: { placeholder: string }) {
     <input
       type="text"
       placeholder={placeholder}
-      className="w-[220px] rounded border border-[#e0ddd8] bg-white px-3 py-1.5 text-[12px] text-[#050a30] outline-none focus:border-[#233dff]"
+      className="w-[220px] rounded border border-[#e0ddd8] bg-white px-3 py-2 text-base text-[#050a30] outline-none focus:border-[#233dff]"
     />
   );
 }

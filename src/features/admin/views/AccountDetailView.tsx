@@ -30,7 +30,7 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
       <>
         <AdminPageHeaderMenu title="Account not found" back={{ href: "/admin/accounts", label: "Back to Accounts" }} />
         <AdminContentArea>
-          <div className="rounded-lg border border-dashed border-[#e5e2dc] bg-white px-6 py-12 text-center text-[13px] text-[#aaa]">
+          <div className="rounded-lg border border-dashed border-[#e5e2dc] bg-white px-6 py-12 text-center text-base text-[#aaa]">
             No account exists with id <span className="font-bold">{accountId}</span>.
           </div>
         </AdminContentArea>

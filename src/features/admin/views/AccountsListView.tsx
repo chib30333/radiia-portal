@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { ArrowDownUp } from "lucide-react";
+
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
+import { cn } from "@/lib/utils";
 
 import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import {
@@ -12,7 +16,7 @@ import {
 } from "../components/AdminPrimitives";
 import { mockAccounts, getMockCompanyById } from "../lib/mock-admin-data";
 import { formatDate } from "../lib/format";
-import type { AccountStatus } from "../lib/types";
+import type { AccountStatus, AdminAccount } from "../lib/types";
 
 type Filter = "all" | "pending" | "active" | "deactivated";
 
@@ -23,8 +27,83 @@ const filterMatches: Record<Filter, (s: AccountStatus) => boolean> = {
   deactivated: (s) => s === "DEACTIVATED"
 };
 
+type SortKey = "user" | "company" | "email" | "location" | "status" | "signed-up";
+type SortDirection = "asc" | "desc";
+
+const sortLabels: Record<SortKey, string> = {
+  user: "User",
+  company: "Company",
+  email: "Email",
+  location: "Location",
+  status: "Status",
+  "signed-up": "Signed up"
+};
+
+function getSortValue(acc: AdminAccount, key: SortKey): string {
+  const company = getMockCompanyById(acc.companyId);
+  switch (key) {
+    case "user":
+      return `${acc.firstName} ${acc.lastName}`.toLowerCase();
+    case "company":
+      return (company?.name ?? "").toLowerCase();
+    case "email":
+      return acc.email.toLowerCase();
+    case "location":
+      return acc.location.toLowerCase();
+    case "status":
+      return acc.status;
+    case "signed-up":
+      return acc.signedUpAt;
+  }
+}
+
+function MarkupValue({ value }: { value: number | null }) {
+  if (value === null) {
+    return <span className="font-light italic text-[#aaa]">Not set</span>;
+  }
+  return <span className="font-bold text-[#050a30]">{value}%</span>;
+}
+
+function SortableHeader({
+  label,
+  active,
+  direction,
+  onClick,
+  align
+}: {
+  label: string;
+  active: boolean;
+  direction: SortDirection;
+  onClick: () => void;
+  align?: "left" | "right" | "center";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-2 transition-colors hover:text-[#050a30]",
+        align === "right" && "ml-auto"
+      )}
+    >
+      <span>{label}</span>
+      <ArrowDownUp className={cn("h-4 w-4", active && "text-[#233dff]")} />
+      {active ? (
+        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#233dff]">
+          {direction}
+        </span>
+      ) : null}
+    </button>
+  );
+}
+
 export function AccountsListView() {
   const [filter, setFilter] = useState<Filter>("all");
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+  const [sortKey, setSortKey] = useState<SortKey>("signed-up");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const counts = useMemo(() => ({
     all: mockAccounts.length,
@@ -33,7 +112,146 @@ export function AccountsListView() {
     deactivated: mockAccounts.filter((a) => a.status === "DEACTIVATED").length
   }), []);
 
-  const rows = mockAccounts.filter((a) => filterMatches[filter](a.status));
+  const filteredRows = useMemo(
+    () => mockAccounts.filter((a) => filterMatches[filter](a.status)),
+    [filter]
+  );
+
+  const sortedRows = useMemo(() => {
+    return [...filteredRows].sort((a, b) => {
+      const left = getSortValue(a, sortKey);
+      const right = getSortValue(b, sortKey);
+      const cmp = left.localeCompare(right, undefined, { numeric: true });
+      return sortDirection === "asc" ? cmp : -cmp;
+    });
+  }, [filteredRows, sortKey, sortDirection]);
+
+  const pageCount = Math.max(1, Math.ceil(sortedRows.length / pageSize));
+  const safePage = Math.min(page, pageCount);
+  const paginatedRows = sortedRows.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const allOnPageSelected =
+    paginatedRows.length > 0 && paginatedRows.every((r) => selectedRowIds.includes(r.id));
+
+  const toggleSort = (key: SortKey) => {
+    setPage(1);
+    if (sortKey === key) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortKey(key);
+    setSortDirection(key === "signed-up" ? "desc" : "asc");
+  };
+
+  const sortLabel = `${sortLabels[sortKey]} ${sortDirection.toUpperCase()}`;
+
+  const columns: DataTableColumn<AdminAccount>[] = [
+    {
+      key: "user",
+      label: (
+        <SortableHeader
+          label="User"
+          active={sortKey === "user"}
+          direction={sortDirection}
+          onClick={() => toggleSort("user")}
+        />
+      ),
+      render: (acc) => (
+        <span className="font-bold text-[#050a30]">
+          {acc.firstName} {acc.lastName}
+        </span>
+      )
+    },
+    {
+      key: "company",
+      label: (
+        <SortableHeader
+          label="Company"
+          active={sortKey === "company"}
+          direction={sortDirection}
+          onClick={() => toggleSort("company")}
+        />
+      ),
+      render: (acc) => <span className="text-[#555]">{getMockCompanyById(acc.companyId)?.name}</span>
+    },
+    {
+      key: "email",
+      label: (
+        <SortableHeader
+          label="Email"
+          active={sortKey === "email"}
+          direction={sortDirection}
+          onClick={() => toggleSort("email")}
+        />
+      ),
+      render: (acc) => <span className="font-light text-[#888]">{acc.email}</span>
+    },
+    {
+      key: "location",
+      label: (
+        <SortableHeader
+          label="Location"
+          active={sortKey === "location"}
+          direction={sortDirection}
+          onClick={() => toggleSort("location")}
+        />
+      ),
+      render: (acc) => <span className="font-light text-[#888]">{acc.location}</span>
+    },
+    {
+      key: "markup-gem",
+      label: <span>Markup — Gemstones</span>,
+      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.gemstoneMarkupPct ?? null} />
+    },
+    {
+      key: "markup-natural",
+      label: <span>Markup — Nat. Diamonds</span>,
+      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.naturalDiamondMarkupPct ?? null} />
+    },
+    {
+      key: "markup-lab",
+      label: <span>Markup — Lab Diamonds</span>,
+      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.labDiamondMarkupPct ?? null} />
+    },
+    {
+      key: "status",
+      label: (
+        <SortableHeader
+          label="Status"
+          active={sortKey === "status"}
+          direction={sortDirection}
+          onClick={() => toggleSort("status")}
+        />
+      ),
+      render: (acc) => <AccountStatusBadge status={acc.status} />
+    },
+    {
+      key: "signed-up",
+      label: (
+        <SortableHeader
+          label="Signed up"
+          active={sortKey === "signed-up"}
+          direction={sortDirection}
+          onClick={() => toggleSort("signed-up")}
+        />
+      ),
+      render: (acc) => <span className="font-light text-[#888]">{formatDate(acc.signedUpAt)}</span>
+    },
+    {
+      key: "actions",
+      label: "",
+      align: "right",
+      render: (acc) => {
+        const pending = acc.status === "PENDING";
+        return (
+          <Link href={`/admin/accounts/${acc.id}` as never}>
+            <AdminButton variant={pending ? "primary" : "outline"} size="sm">
+              {pending ? "Review →" : "View →"}
+            </AdminButton>
+          </Link>
+        );
+      }
+    }
+  ];
 
   return (
     <>
@@ -42,7 +260,7 @@ export function AccountsListView() {
         subtitle={`${counts.all} total · ${counts.pending} pending · ${counts.active} active`}
       />
       <AdminContentArea>
-        <div className="mb-4 flex flex-wrap items-center gap-3 px-6 pt-12">
+        <div className="flex flex-wrap items-center gap-3 px-6 pt-12">
           <FilterTab active={filter === "all"} count={counts.all} onClick={() => setFilter("all")}>
             All
           </FilterTab>
@@ -69,87 +287,110 @@ export function AccountsListView() {
           >
             Deactivated
           </FilterTab>
-          <div className="ml-auto">
-            <SearchInput placeholder="Search by name, company, email…" />
+          <span className="rounded-md border border-[#233dff]/40 bg-[#eef1ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#233dff]">
+            {selectedRowIds.length} selected
+          </span>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center justify-end gap-3 px-6">
+          <SearchInput placeholder="Search by name, company, email…" />
+          <div className="custom-select">
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPage(1);
+                setPageSize(Number(e.target.value));
+              }}
+              className="rounded-md border border-[#e0ddd8] bg-white text-base text-[#050a30] outline-none"
+            >
+              <option value="5">5 rows</option>
+              <option value="10">10 rows</option>
+              <option value="20">20 rows</option>
+              <option value="50">50 rows</option>
+            </select>
+          </div>
+          <div className="rounded-md border border-[#e0ddd8] bg-white px-3 py-2 text-base text-[#050a30]">
+            Sort: {sortLabel}
           </div>
         </div>
 
-        <div className="overflow-hidden px-6">
-          <div className="overflow-x-auto border border-[#e5e2dc] bg-white rounded-lg">
-            <table className="w-full border-collapse text-[12px]">
-              <thead>
-                <tr className="border-b-2 border-[#e5e2dc] bg-[#fafaf8] text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#aaa]">
-                  <th className="whitespace-nowrap px-3.5 py-2.5">User</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Company</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Email</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Location</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Markup — Gemstones</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Markup — Nat. Diamonds</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Markup — Lab Diamonds</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Status</th>
-                  <th className="whitespace-nowrap px-3.5 py-2.5">Signed up</th>
-                  <th className="px-3.5 py-2.5"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((acc) => {
-                  const company = getMockCompanyById(acc.companyId);
-                  const pending = acc.status === "PENDING";
-                  return (
-                    <tr
-                      key={acc.id}
-                      className={
-                        "border-b border-[#f0ede7] last:border-b-0 hover:bg-[#fafaf8] " +
-                        (pending ? "bg-[#fffbf2]" : "")
-                      }
-                    >
-                      <td className="px-3.5 py-3 font-bold text-[#050a30]">
-                        {acc.firstName} {acc.lastName}
-                      </td>
-                      <td className="px-3.5 py-3 text-[#555]">{company?.name}</td>
-                      <td className="px-3.5 py-3 font-light text-[#888]">{acc.email}</td>
-                      <td className="px-3.5 py-3 font-light text-[#888]">{acc.location}</td>
-                      <MarkupCell value={company?.gemstoneMarkupPct ?? null} />
-                      <MarkupCell value={company?.naturalDiamondMarkupPct ?? null} />
-                      <MarkupCell value={company?.labDiamondMarkupPct ?? null} />
-                      <td className="px-3.5 py-3">
-                        <AccountStatusBadge status={acc.status} />
-                      </td>
-                      <td className="px-3.5 py-3 font-light text-[#888]">
-                        {formatDate(acc.signedUpAt)}
-                      </td>
-                      <td className="px-3.5 py-3">
-                        <Link href={`/admin/accounts/${acc.id}` as never}>
-                          <AdminButton variant={pending ? "primary" : "outline"} size="sm">
-                            {pending ? "Review →" : "View →"}
-                          </AdminButton>
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <td
-                    colSpan={10}
-                    className="px-3.5 py-3.5 text-center text-[11px] font-light text-[#aaa]"
-                  >
-                    Showing {rows.length} of {mockAccounts.length} accounts
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div className="mt-4 flex flex-1 flex-col gap-4 px-6 pb-6">
+          <DataTable<AdminAccount>
+            columns={columns}
+            rows={paginatedRows}
+            getRowId={(r) => r.id}
+            selectedRowIds={selectedRowIds}
+            onToggleRowSelection={(id) =>
+              setSelectedRowIds((current) =>
+                current.includes(id) ? current.filter((x) => x !== id) : [...current, id]
+              )
+            }
+            onToggleSelectAll={() =>
+              setSelectedRowIds((current) => {
+                if (allOnPageSelected) {
+                  return current.filter((id) => !paginatedRows.some((r) => r.id === id));
+                }
+                const merged = new Set(current);
+                paginatedRows.forEach((r) => merged.add(r.id));
+                return [...merged];
+              })
+            }
+            allRowsSelected={allOnPageSelected}
+            page={safePage}
+            pageCount={pageCount}
+            summary={
+              <>
+                Showing {(safePage - 1) * pageSize + (paginatedRows.length ? 1 : 0)}-
+                {(safePage - 1) * pageSize + paginatedRows.length} of {sortedRows.length} accounts
+              </>
+            }
+            onPreviousPage={() => setPage((p) => Math.max(1, p - 1))}
+            onNextPage={() => setPage((p) => Math.min(pageCount, p + 1))}
+            rowClassName={(acc, _i, selected) =>
+              cn(acc.status === "PENDING" && !selected && "bg-[#fffbf2]", selected && "bg-[#f8f9ff]")
+            }
+            emptyState="No accounts match the current filter."
+          />
+
+          <BulkActionBar selectedCount={selectedRowIds.length} kind="accounts" />
         </div>
       </AdminContentArea>
     </>
   );
 }
 
-function MarkupCell({ value }: { value: number | null }) {
-  if (value === null) {
-    return (
-      <td className="px-3.5 py-3 font-light italic text-[#aaa]">Not set</td>
-    );
-  }
-  return <td className="px-3.5 py-3 font-bold text-[#050a30]">{value}%</td>;
+function BulkActionBar({
+  selectedCount,
+  kind
+}: {
+  selectedCount: number;
+  kind: "accounts" | "requests";
+}) {
+  const disabled = selectedCount === 0;
+  const actions =
+    kind === "accounts"
+      ? ["Approve", "Decline", "Deactivate", "Export CSV"]
+      : ["Mark approved", "Mark rejected", "Export CSV"];
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[#e5e2dc] bg-[#fafaf8] px-4 py-3 text-base">
+      <span className="text-[#888]">With selected:</span>
+      {actions.map((label, i) => (
+        <button
+          key={label}
+          type="button"
+          disabled={disabled}
+          className={cn(
+            "rounded-sm px-4 py-2 font-bold uppercase tracking-[0.06em] transition-colors",
+            i === 0
+              ? "bg-[#050a30] text-white hover:bg-[#050a30]/90"
+              : "border border-[#e0ddd8] bg-white text-[#050a30] hover:bg-[#fafaf8]",
+            disabled && "cursor-not-allowed opacity-50"
+          )}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
 }

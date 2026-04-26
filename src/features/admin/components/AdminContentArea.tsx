@@ -22,7 +22,7 @@ export function AdminPageHeaderMenu({
         {back ? (
           <Link
             href={back.href as never}
-            className="mb-1.5 inline-block text-xs text-[#233dff] hover:underline"
+            className="mb-1.5 inline-block text-sm text-[#233dff] hover:underline"
           >
             ← {back.label}
           </Link>
