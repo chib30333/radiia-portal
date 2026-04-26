@@ -52,7 +52,7 @@ export function DataTable<T>({
   mobileCardRender
 }: DataTableProps<T>) {
   return (
-    <div className="overflow-hidden rounded-[14px] border border-[#e5e2dc] bg-white shadow-[0_16px_40px_rgba(5,10,48,0.04)]">
+    <div className="overflow-hidden rounded-[8px] border border-[#e5e2dc] bg-white shadow-[0_16px_40px_rgba(5,10,48,0.04)]">
       {mobileCardRender ? (
         <div className="space-y-3 border-b border-[#e5e2dc] bg-[#fcfbf8] p-3 lg:hidden">
           {rows.length > 0 ? (

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AdminContentArea, AdminPageHeader } from "../components/AdminShell";
+import { AdminContentArea, AdminPageHeaderMenu } from "../components/AdminContentArea";
 import {
   AdminBadge,
   AdminButton,
@@ -27,7 +27,7 @@ export function RequestDetailView({ requestId }: { requestId: string }) {
   if (!request) {
     return (
       <>
-        <AdminPageHeader
+        <AdminPageHeaderMenu
           title="Request not found"
           back={{ href: "/admin/requests", label: "Back to Requests" }}
         />
@@ -61,7 +61,7 @@ function RequestDetailContent({ request }: { request: AdminRequest }) {
 
   return (
     <>
-      <AdminPageHeader
+      <AdminPageHeaderMenu
         title={request.reference}
         subtitle={`${company?.name} · Submitted ${formatDate(request.submittedAt)} at ${formatTime(request.submittedAt)}`}
         back={{ href: "/admin/requests", label: "Back to Requests" }}
