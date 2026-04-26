@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import type { AccountStatus, RequestItemStatus, RequestStatus, RequestType } from "../lib/types";
 
 const sizeClasses = {
-  sm: "px-1.5 py-[2px] text-[9px]",
-  md: "px-2 py-[3px] text-[10px]",
-  lg: "px-2.5 py-1 text-[11px]"
+  sm: "px-1.5 py-1 text-xs",
+  md: "px-2 py-1 text-sm",
+  lg: "px-2.5 py-1 text-base"
 } as const;
 
 type Size = keyof typeof sizeClasses;
@@ -42,7 +42,7 @@ export function AdminBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 whitespace-nowrap rounded-[3px] font-bold uppercase tracking-[0.06em]",
+        "inline-flex items-center gap-1 whitespace-nowrap rounded font-bold uppercase tracking-[0.06em]",
         sizeClasses[size],
         toneClass
       )}
@@ -59,7 +59,7 @@ export function AccountStatusBadge({
   status: AccountStatus;
   size?: Size;
 }) {
-  if (status === "PENDING") return <AdminBadge tone="pending" size={size}>Pending</AdminBadge>;
+  if (status === "PENDING") return <AdminBadge tone="pending" size={size}>Pending Approval</AdminBadge>;
   if (status === "ACTIVE") return <AdminBadge tone="active" size={size}>Active</AdminBadge>;
   if (status === "DEACTIVATED") return <AdminBadge tone="suspended" size={size}>Deactivated</AdminBadge>;
   return <AdminBadge tone="suspended" size={size}>Declined</AdminBadge>;
@@ -126,8 +126,8 @@ export function AdminButton({
     blue: "bg-[#233dff] text-white hover:bg-[#1c34d6]"
   };
   const sizes = {
-    md: "px-4 py-2 text-[11px]",
-    sm: "px-3 py-[5px] text-[10px]"
+    md: "px-4 py-2 text-sm",
+    sm: "px-3 py-2 text-base"
   };
 
   return (
@@ -171,11 +171,11 @@ export function AdminCardHeader({
   right?: ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#f0ede7] px-5 py-4">
+    <div className="flex items-center justify-between border-b border-[#f0ede7] px-8 py-6">
       <div>
-        <div className="text-[12px] font-bold text-[#050a30]">{title}</div>
+        <div className="text-xl font-bold text-[#050a30]">{title}</div>
         {subtitle ? (
-          <div className="mt-0.5 text-[11px] font-light text-[#aaa]">{subtitle}</div>
+          <div className="mt-0.5 text-base font-light text-[#aaa]">{subtitle}</div>
         ) : null}
       </div>
       {right}
@@ -186,17 +186,17 @@ export function AdminCardHeader({
 export function InfoCell({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.1em] text-[#aaa]">
+      <div className="mb-1 text-base font-bold uppercase tracking-[0.1em] text-[#aaa]">
         {label}
       </div>
-      <div className="text-[13px] leading-[1.5] text-[#050a30]">{children}</div>
+      <div className="text-xl leading-[1.5] text-[#050a30]">{children}</div>
     </div>
   );
 }
 
 export function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <label className="mb-2 block text-[10px] font-bold uppercase tracking-[0.1em] text-[#aaa]">
+    <label className="mb-2 block text-base font-bold uppercase tracking-[0.1em] text-[#aaa]">
       {children}
     </label>
   );
@@ -216,9 +216,9 @@ export function MarkupInput({
         aria-label={ariaLabel}
         defaultValue={defaultValue ?? ""}
         placeholder="0"
-        className="w-20 rounded border border-[#e0ddd8] bg-white px-2.5 py-2 text-center text-[14px] font-bold text-[#050a30] outline-none focus:border-[#233dff]"
+        className="w-20 rounded border border-[#e0ddd8] bg-white px-3 py-2 text-center text-xl font-bold text-[#050a30] outline-none focus:border-[#233dff]"
       />
-      <span className="text-[16px] font-bold text-[#050a30]">%</span>
+      <span className="text-xl font-bold text-[#050a30]">%</span>
     </div>
   );
 }
