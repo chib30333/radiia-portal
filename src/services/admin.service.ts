@@ -1,14 +1,23 @@
-// Typed fixtures for Phase A-UI. Numbers and copy mirror the wireframe at
-// info/wireframes/RADIIA_Admin_Portal_Wireframes (2).html so the rendered UI
-// can be diffed against the wireframe screen-by-screen.
+// Admin domain service — Phase A-UI mock implementation.
+//
+// Per guideline 03, every read goes through a function in
+// `src/services/<domain>.service.ts` that returns a domain type from
+// `src/types/`. The async getters here mirror the shape Phase A-DATA will use
+// once Prisma is wired in (Phase I); the swap is then a mechanical change of
+// the in-memory lookups to `prisma.*` calls.
+//
+// Sync helpers (`findCompanyById`, `findAccountById`, `findRequestById`) are
+// retained alongside the async surface because Phase A-UI client components
+// dereference relations during render. Phase A-DATA will replace those
+// helpers with batched joins on the server.
 
 import type {
   AdminAccount,
   AdminCompany,
   AdminRequest
-} from "./types";
+} from "@/types/admin";
 
-export const mockCompanies: AdminCompany[] = [
+const adminCompanies: AdminCompany[] = [
   {
     id: "co-morrison",
     name: "Morrison Fine Jewelry",
@@ -73,7 +82,7 @@ export const mockCompanies: AdminCompany[] = [
   }
 ];
 
-export const mockAccounts: AdminAccount[] = [
+const adminAccounts: AdminAccount[] = [
   {
     id: "acc-morrison",
     firstName: "Kate",
@@ -154,7 +163,7 @@ export const mockAccounts: AdminAccount[] = [
   }
 ];
 
-export const mockRequests: AdminRequest[] = [
+const adminRequests: AdminRequest[] = [
   {
     id: "req-0041",
     reference: "REQ-0041",
@@ -319,49 +328,66 @@ export const mockRequests: AdminRequest[] = [
   }
 ];
 
-export function mockTotalRequestValue(req: AdminRequest): number {
+// Synthesized totals for archive rows that the wireframe shows but doesn't
+// model item-by-item. Phase A-DATA replaces these with `_sum` aggregates on
+// the request-items relation.
+const archiveTotals: Record<string, { items: number; total: number }> = {
+  "req-0038": { items: 3, total: 18600 },
+  "req-0037": { items: 2, total: 11200 },
+  "req-0036": { items: 2, total: 9840 },
+  "req-0031": { items: 4, total: 22100 }
+};
+
+export async function listAccounts(): Promise<AdminAccount[]> {
+  return adminAccounts;
+}
+
+export async function getAccountById(id: string): Promise<AdminAccount | null> {
+  return adminAccounts.find((a) => a.id === id) ?? null;
+}
+
+export async function listCompanies(): Promise<AdminCompany[]> {
+  return adminCompanies;
+}
+
+export async function getCompanyById(id: string): Promise<AdminCompany | null> {
+  return adminCompanies.find((c) => c.id === id) ?? null;
+}
+
+export async function listRequests(): Promise<AdminRequest[]> {
+  return adminRequests;
+}
+
+export async function getRequestById(id: string): Promise<AdminRequest | null> {
+  return adminRequests.find((r) => r.id === id) ?? null;
+}
+
+// Sync, in-memory accessors for Phase A-UI client components. Replace with
+// server-side joins in Phase A-DATA — see file header.
+export function findCompanyById(id: string): AdminCompany | undefined {
+  return adminCompanies.find((c) => c.id === id);
+}
+
+export function findAccountById(id: string): AdminAccount | undefined {
+  return adminAccounts.find((a) => a.id === id);
+}
+
+export function findRequestById(id: string): AdminRequest | undefined {
+  return adminRequests.find((r) => r.id === id);
+}
+
+export function getRequestItemCount(req: AdminRequest): number {
+  if (req.items.length > 0) return req.items.length;
+  return archiveTotals[req.id]?.items ?? 0;
+}
+
+export function getRequestTotalValue(req: AdminRequest): number {
   if (req.items.length > 0) {
     return req.items.reduce((sum, it) => sum + it.totalPrice, 0);
   }
-  // Synthesized totals for archive rows the wireframe shows but we don't model item-by-item.
-  switch (req.id) {
-    case "req-0038":
-      return 18600;
-    case "req-0037":
-      return 11200;
-    case "req-0036":
-      return 9840;
-    case "req-0031":
-      return 22100;
-    default:
-      return 0;
-  }
+  return archiveTotals[req.id]?.total ?? 0;
 }
 
-export function mockTotalRequestItemCount(req: AdminRequest): number {
-  if (req.items.length > 0) return req.items.length;
-  switch (req.id) {
-    case "req-0038":
-      return 3;
-    case "req-0037":
-      return 2;
-    case "req-0036":
-      return 2;
-    case "req-0031":
-      return 4;
-    default:
-      return 0;
-  }
-}
-
-export function getMockCompanyById(id: string): AdminCompany | undefined {
-  return mockCompanies.find((c) => c.id === id);
-}
-
-export function getMockAccountById(id: string): AdminAccount | undefined {
-  return mockAccounts.find((a) => a.id === id);
-}
-
-export function getMockRequestById(id: string): AdminRequest | undefined {
-  return mockRequests.find((r) => r.id === id);
-}
+export const adminAccountsList: ReadonlyArray<AdminAccount> = adminAccounts;
+export const adminCompaniesList: ReadonlyArray<AdminCompany> = adminCompanies;
+export const adminRequestsList: ReadonlyArray<AdminRequest> = adminRequests;

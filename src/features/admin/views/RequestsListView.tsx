@@ -16,13 +16,15 @@ import {
   SearchInput
 } from "../components/AdminPrimitives";
 import {
-  mockRequests,
-  getMockCompanyById,
-  mockTotalRequestItemCount,
-  mockTotalRequestValue
-} from "../lib/mock-admin-data";
-import { formatRelative, formatUsd } from "../lib/format";
-import type { AdminRequest, RequestStatus, RequestType } from "../lib/types";
+  adminRequestsList,
+  findCompanyById,
+  getRequestItemCount,
+  getRequestTotalValue
+} from "@/services/admin.service";
+import { formatRelative, formatUsd } from "@/lib/format";
+import type { AdminRequest, RequestStatus, RequestType } from "@/types/admin";
+
+import { BulkActionBar } from "../components/BulkActionBar";
 
 type StatusFilter = "all" | RequestStatus;
 type TypeFilter = "all" | RequestType;
@@ -47,11 +49,11 @@ function getSortValue(req: AdminRequest, key: SortKey): string | number {
     case "type":
       return req.type;
     case "client":
-      return (getMockCompanyById(req.companyId)?.name ?? "").toLowerCase();
+      return (findCompanyById(req.companyId)?.name ?? "").toLowerCase();
     case "items":
-      return mockTotalRequestItemCount(req);
+      return getRequestItemCount(req);
     case "total":
-      return mockTotalRequestValue(req);
+      return getRequestTotalValue(req);
     case "status":
       return req.status;
     case "submitted":
@@ -103,12 +105,12 @@ export function RequestsListView() {
   const today = new Date("2026-04-23T12:00:00.000Z");
 
   const counts = useMemo(() => ({
-    pending: mockRequests.filter((r) => r.status === "PENDING").length
+    pending: adminRequestsList.filter((r) => r.status === "PENDING").length
   }), []);
 
   const filteredRows = useMemo(
     () =>
-      mockRequests.filter((r) => {
+      adminRequestsList.filter((r) => {
         if (statusFilter !== "all" && r.status !== statusFilter) return false;
         if (typeFilter !== "all" && r.type !== typeFilter) return false;
         return true;
@@ -185,7 +187,7 @@ export function RequestsListView() {
           onClick={() => toggleSort("client")}
         />
       ),
-      render: (req) => <span className="text-[#555]">{getMockCompanyById(req.companyId)?.name}</span>
+      render: (req) => <span className="text-[#555]">{findCompanyById(req.companyId)?.name}</span>
     },
     {
       key: "items",
@@ -198,7 +200,7 @@ export function RequestsListView() {
         />
       ),
       render: (req) => {
-        const itemCount = mockTotalRequestItemCount(req);
+        const itemCount = getRequestItemCount(req);
         return (
           <span className="font-light text-[#888]">
             {itemCount} {itemCount === 1 ? "item" : "items"}
@@ -218,7 +220,7 @@ export function RequestsListView() {
         />
       ),
       align: "right",
-      render: (req) => <span className="font-bold text-[#050a30]">{formatUsd(mockTotalRequestValue(req))}</span>
+      render: (req) => <span className="font-bold text-[#050a30]">{formatUsd(getRequestTotalValue(req))}</span>
     },
     {
       key: "note",
@@ -276,7 +278,7 @@ export function RequestsListView() {
     <>
       <AdminPageHeaderMenu
         title="Requests"
-        subtitle={`${counts.pending} pending · ${mockRequests.length} total this month`}
+        subtitle={`${counts.pending} pending · ${adminRequestsList.length} total this month`}
       />
       <AdminContentArea>
         <div className="flex flex-wrap items-center gap-2.5 px-6 pt-12">
@@ -379,36 +381,10 @@ export function RequestsListView() {
             emptyState="No requests match the current filters."
           />
 
-          <BulkActionBar selectedCount={selectedRowIds.length} />
+          <BulkActionBar selectedCount={selectedRowIds.length} kind="requests" />
         </div>
       </AdminContentArea>
     </>
   );
 }
 
-function BulkActionBar({ selectedCount }: { selectedCount: number }) {
-  const disabled = selectedCount === 0;
-  const actions = ["Mark approved", "Mark rejected", "Export CSV"];
-
-  return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[#e5e2dc] bg-[#fafaf8] px-4 py-3 text-base">
-      <span className="text-[#888]">With selected:</span>
-      {actions.map((label, i) => (
-        <button
-          key={label}
-          type="button"
-          disabled={disabled}
-          className={cn(
-            "rounded-sm px-4 py-2 font-bold uppercase tracking-[0.06em] transition-colors",
-            i === 0
-              ? "bg-[#050a30] text-white hover:bg-[#050a30]/90"
-              : "border border-[#e0ddd8] bg-white text-[#050a30] hover:bg-[#fafaf8]",
-            disabled && "cursor-not-allowed opacity-50"
-          )}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  );
-}

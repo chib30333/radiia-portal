@@ -14,9 +14,11 @@ import {
   FilterTab,
   SearchInput
 } from "../components/AdminPrimitives";
-import { mockAccounts, getMockCompanyById } from "../lib/mock-admin-data";
-import { formatDate } from "../lib/format";
-import type { AccountStatus, AdminAccount } from "../lib/types";
+import { adminAccountsList, findCompanyById } from "@/services/admin.service";
+import { formatDate } from "@/lib/format";
+import type { AccountStatus, AdminAccount } from "@/types/admin";
+
+import { BulkActionBar } from "../components/BulkActionBar";
 
 type Filter = "all" | "pending" | "active" | "deactivated";
 
@@ -40,7 +42,7 @@ const sortLabels: Record<SortKey, string> = {
 };
 
 function getSortValue(acc: AdminAccount, key: SortKey): string {
-  const company = getMockCompanyById(acc.companyId);
+  const company = findCompanyById(acc.companyId);
   switch (key) {
     case "user":
       return `${acc.firstName} ${acc.lastName}`.toLowerCase();
@@ -106,14 +108,14 @@ export function AccountsListView() {
   const [pageSize, setPageSize] = useState(10);
 
   const counts = useMemo(() => ({
-    all: mockAccounts.length,
-    pending: mockAccounts.filter((a) => a.status === "PENDING").length,
-    active: mockAccounts.filter((a) => a.status === "ACTIVE").length,
-    deactivated: mockAccounts.filter((a) => a.status === "DEACTIVATED").length
+    all: adminAccountsList.length,
+    pending: adminAccountsList.filter((a) => a.status === "PENDING").length,
+    active: adminAccountsList.filter((a) => a.status === "ACTIVE").length,
+    deactivated: adminAccountsList.filter((a) => a.status === "DEACTIVATED").length
   }), []);
 
   const filteredRows = useMemo(
-    () => mockAccounts.filter((a) => filterMatches[filter](a.status)),
+    () => adminAccountsList.filter((a) => filterMatches[filter](a.status)),
     [filter]
   );
 
@@ -171,7 +173,7 @@ export function AccountsListView() {
           onClick={() => toggleSort("company")}
         />
       ),
-      render: (acc) => <span className="text-[#555]">{getMockCompanyById(acc.companyId)?.name}</span>
+      render: (acc) => <span className="text-[#555]">{findCompanyById(acc.companyId)?.name}</span>
     },
     {
       key: "email",
@@ -200,17 +202,17 @@ export function AccountsListView() {
     {
       key: "markup-gem",
       label: <span>Markup — Gemstones</span>,
-      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.gemstoneMarkupPct ?? null} />
+      render: (acc) => <MarkupValue value={findCompanyById(acc.companyId)?.gemstoneMarkupPct ?? null} />
     },
     {
       key: "markup-natural",
       label: <span>Markup — Nat. Diamonds</span>,
-      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.naturalDiamondMarkupPct ?? null} />
+      render: (acc) => <MarkupValue value={findCompanyById(acc.companyId)?.naturalDiamondMarkupPct ?? null} />
     },
     {
       key: "markup-lab",
       label: <span>Markup — Lab Diamonds</span>,
-      render: (acc) => <MarkupValue value={getMockCompanyById(acc.companyId)?.labDiamondMarkupPct ?? null} />
+      render: (acc) => <MarkupValue value={findCompanyById(acc.companyId)?.labDiamondMarkupPct ?? null} />
     },
     {
       key: "status",
@@ -359,38 +361,3 @@ export function AccountsListView() {
   );
 }
 
-function BulkActionBar({
-  selectedCount,
-  kind
-}: {
-  selectedCount: number;
-  kind: "accounts" | "requests";
-}) {
-  const disabled = selectedCount === 0;
-  const actions =
-    kind === "accounts"
-      ? ["Approve", "Decline", "Deactivate", "Export CSV"]
-      : ["Mark approved", "Mark rejected", "Export CSV"];
-
-  return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-[#e5e2dc] bg-[#fafaf8] px-4 py-3 text-base">
-      <span className="text-[#888]">With selected:</span>
-      {actions.map((label, i) => (
-        <button
-          key={label}
-          type="button"
-          disabled={disabled}
-          className={cn(
-            "rounded-sm px-4 py-2 font-bold uppercase tracking-[0.06em] transition-colors",
-            i === 0
-              ? "bg-[#050a30] text-white hover:bg-[#050a30]/90"
-              : "border border-[#e0ddd8] bg-white text-[#050a30] hover:bg-[#fafaf8]",
-            disabled && "cursor-not-allowed opacity-50"
-          )}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  );
-}

@@ -23,7 +23,7 @@ import {
 import { formatDate, formatTime, formatUsd } from "@/lib/format";
 
 export function AccountDetailView({ accountId }: { accountId: string }) {
-  const account = findAccountById(accountId);
+  const account = getMockAccountById(accountId);
 
   if (!account) {
     return (
@@ -38,7 +38,7 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
     );
   }
 
-  const company = findCompanyById(account.companyId);
+  const company = getMockCompanyById(account.companyId);
   const isPending = account.status === "PENDING";
   const fullName = `${account.firstName} ${account.lastName}`;
 
@@ -46,7 +46,7 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
     ? `${company?.name} · Signed up ${formatDate(account.signedUpAt)} at ${formatTime(account.signedUpAt)}`
     : `${company?.name} · Active since ${formatDate(account.activeSince ?? account.signedUpAt)}`;
 
-  const recentRequests = adminRequestsList
+  const recentRequests = mockRequests
     .filter((r) => r.companyId === account.companyId)
     .slice(0, 3);
 
@@ -99,8 +99,8 @@ export function AccountDetailView({ accountId }: { accountId: string }) {
                   reference: req.reference,
                   status: req.status,
                   type: req.type,
-                  itemCount: getRequestItemCount(req),
-                  total: getRequestTotalValue(req),
+                  itemCount: mockTotalRequestItemCount(req),
+                  total: mockTotalRequestValue(req),
                   href: `/admin/requests/${req.id}`
                 }))}
               />
