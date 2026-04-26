@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
-export type ShellVariant = "default" | "page" | "auth";
+export type ShellVariant = "default" | "page" | "auth" | "admin";
 
 type ShellProps = {
   children: ReactNode;
@@ -17,6 +17,10 @@ type ShellProps = {
 };
 
 function resolveShellVariant(pathname: string): ShellVariant {
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return "admin";
+  }
+
   if (
     pathname === "/login" ||
     pathname === "/signup" ||
@@ -45,18 +49,25 @@ function resolveMainSection(pathname: string) {
 const shellVariantClasses: Record<ShellVariant, string> = {
   default: "",
   page: "",
-  auth: "mx-auto flex w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16"
+  auth: "mx-auto flex w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16",
+  admin: ""
 };
 
 export function Shell({ children, className, variant }: ShellProps) {
   const pathname = usePathname();
   const resolvedVariant = variant ?? resolveShellVariant(pathname);
-  const showFooter = resolvedVariant !== "auth";
-  const mainBackgroundClass = resolvedVariant === "auth" ? "bg-[#f0ede7]" : "bg-white";
+  const showFooter = resolvedVariant !== "auth" && resolvedVariant !== "admin";
+  const showHeader = resolvedVariant !== "admin";
+  const mainBackgroundClass =
+    resolvedVariant === "auth"
+      ? "bg-[#f0ede7]"
+      : resolvedVariant === "admin"
+        ? "bg-[#f0ede7] items-stretch justify-stretch"
+        : "bg-white";
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f0ede7]">
-      <Header />
+      {showHeader ? <Header /> : null}
       <main className={cn("flex flex-1 justify-center items-center", mainBackgroundClass, resolveMainSection(pathname))}>
         <div className={cn("flex min-h-full w-full flex-col", shellVariantClasses[resolvedVariant], className)}>
           {children}
