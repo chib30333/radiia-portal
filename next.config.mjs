@@ -3,7 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {
-    typedRoutes: true
+    typedRoutes: true,
+    serverComponentsExternalPackages: ["@node-rs/argon2", "@prisma/client"]
   }
 };
 

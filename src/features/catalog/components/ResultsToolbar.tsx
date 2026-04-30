@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import type { Route } from "next";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ function ViewToggleOption({
 
   return (
     <Link
-      href={href}
+      href={href as Route}
       className="flex flex-1 items-center gap-2 bg-white px-4 py-2 text-sm font-semibold text-[#888] transition-colors hover:bg-[#f7f6f3] sm:px-5 sm:text-xl"
     >
       {content}
@@ -89,7 +90,7 @@ export function ResultsToolbar({
           <div className="flex flex-wrap items-center gap-3 sm:gap-5">
             {modifySearchHref ? (
               <Link
-                href={modifySearchHref}
+                href={modifySearchHref as Route}
                 className="inline-flex items-center gap-2 text-base font-semibold text-[#233dff] transition-colors hover:text-[#050a30] sm:text-xl"
               >
                 <MoveLeft className="h-4 w-4 sm:h-5 sm:w-5" /> Modify search
